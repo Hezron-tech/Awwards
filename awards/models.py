@@ -50,7 +50,25 @@ class Project(models.Model):
     @classmethod
     def search_project(cls, name):
         return cls.objects.filter(title__icontains=name).all() 
-          
+
+
+class Rates(models.Model):
+    RATE_CHOICES = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+        (6, '6'),
+        (7, '7'),
+        (8, '8'),
+        (9, '9'),
+        (10, '10'),
+    )
+
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    project=models.ForeignKey(Project,on_delete=models.CASCADE,null=True)
+              
         
                      
 
