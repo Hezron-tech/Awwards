@@ -21,7 +21,16 @@ class Profile(models.Model):
         self.delete()
 
     def update_profile(cls,id):
-        project.objects.get(user_id=id)        
+        Project.objects.get(user_id=id) 
+
+class Project(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=150)
+    image = CloudinaryField('images')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    url = models.URLField(blank=True)
+    description = models.TextField(max_length=300, blank=True)
+    date = models.DateTimeField(auto_now_add=True)               
 
 
 
