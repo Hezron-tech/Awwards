@@ -17,3 +17,9 @@ def profile(request):
     projects = Project.objects.filter(user=current_user.id).all
     return render(request, 'registration/profile.html', {"projects": projects})
 
+
+@login_required(login_url='/accounts/login')
+def project(request, id):
+    project = Project.objects.get(id=id)
+    reviews = Rates.objects.all()
+    return render(request, 'view-project.html', {"project": project, "reviews": reviews})
