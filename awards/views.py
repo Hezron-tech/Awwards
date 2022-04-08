@@ -1,4 +1,6 @@
 from django.shortcuts import redirect, render
+from django.http.response import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ProjectForm,RatingsForm,SignUpForm, UpdateProfileForm, UpdateUserForm
 
@@ -17,6 +19,20 @@ def profile(request):
     current_user = request.user
     projects = Project.objects.filter(user=current_user.id).all
     return render(request, 'registration/profile.html', {"projects": projects})
+
+
+@login_required(login_url='/accounts/login/')
+def update_profile(request, id):
+    profile_object = get_object_or_404(Profile, user_id=id)
+    user_object = get_object_or_404(User, id=id)
+    profile_form = UpdateProfileForm(request.POST or None, request.FILES, instance=profile_object)
+    user_form = UpdateUserForm(request.POST or None, instance=user_object)
+    if profile_form.is_valid() and user_form.is_valid():
+        profile_form.save()
+        user_form.save()
+        return HttpResponseRedirect("/profile")
+
+    return render(request, "registration/update_profile.html", {"form": profile_form, "form2": user_form})    
 
 
 @login_required(login_url='/accounts/login')
