@@ -11,7 +11,19 @@ class Profile(models.Model):
     bio =models.TextField(max_length=300, blank=True)
     contact= models.CharField(max_length=50,blank=True)
     country = models.CharField(max_length=50, blank=True)
-    
+
+    def __str__(self):
+        return self.user.username
+
+    def save_profile(self):
+        self.save()
+    def delete_profile(self):
+        self.delete()
+
+    def update_profile(cls,id):
+        project.objects.get(user_id=id)        
+
+
 
 
 
