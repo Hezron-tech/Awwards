@@ -23,4 +23,10 @@ class UpdateUserForm(forms.ModelForm):
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['contact','profile_pic', 'bio']            
+        fields = ['contact','profile_pic', 'bio']  
+
+        
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        exclude = ['user', 'profile', 'date']                  
