@@ -29,4 +29,9 @@ class UpdateProfileForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        exclude = ['user', 'profile', 'date']                  
+        exclude = ['user', 'profile', 'date']  
+
+class RatingsForm(forms.ModelForm):
+    class Meta:
+        model = Rates
+        fields = ['design', 'usability', 'content']                        
