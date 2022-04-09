@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'awards.apps.AwardsConfig',
     'bootstrap4',
     'cloudinary',
+    'rest_framework',
+    'rest_framework.authtoken',
     
 ]
 
@@ -92,6 +94,12 @@ cloudinary.config(
   api_key = "227791919185365", 
   api_secret = "8xe14ql2a0O2VQf5kNfAFhQ6dk4" 
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

@@ -1,4 +1,4 @@
-from re import T
+
 from django.db import models
 from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import User
@@ -11,6 +11,7 @@ class Profile(models.Model):
     bio =models.TextField(max_length=300, blank=True)
     contact= models.CharField(max_length=50,blank=True)
     country = models.CharField(max_length=50, blank=True)
+
 
     def __str__(self):
         return self.user.username
@@ -77,6 +78,14 @@ class Rates(models.Model):
 
     def __str__(self):
         return self.project.title
+
+
+class Moringa(models.Model):
+    title = models.CharField(max_length=50)
+    url = models.URLField(max_length=100)
+    description =models.TextField(max_length=500)
+
+
 
 
 

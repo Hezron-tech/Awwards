@@ -9,8 +9,15 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
-from .models import Project,Profile,Rates
-from django.urls import reverse
+# API
+
+from .models import Profile, Project, Rates,Moringa
+from .serializers import  ProjectSerializer
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .permissions import IsAdminOrReadOnly
 
 # Create your views here.
 
@@ -25,6 +32,36 @@ def profile(request):
     current_user = request.user
     projects = Project.objects.filter(user=current_user.id).all
     return render(request, 'registration/profile.html', {"projects": projects})
+
+
+@login_required(login_url='/accounts/login/')
+def search(request):
+    if 'project' in request.GET and request.GET['project']:
+        project = request.GET.get("project")
+        results = Project.search_project(project)
+        message = f'project'
+        return render(request, 'search.html', {'projects': results, 'message': message})
+    else:
+        message = "You haven't searched for anything, please try again"
+    return render(request, 'search.html', {'message': message})  
+
+def signup(request):
+    print('here')
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db() 
+            user.profile.birth_date = form.cleaned_data.get('full_name')
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+
+            login(request, user)
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/registration_form.html', {'form': form})      
 
 
 @login_required(login_url='/accounts/login/')
@@ -51,7 +88,7 @@ def project(request, id):
 def post_project(request):
     current_user = request.user
     if request.method == 'POST':
-        form = projectForm(request.POST,request.FILES)
+        form = ProjectForm(request.POST,request.FILES)
         if form.is_valid():
             post_project = form.save(commit=False)
             post_project.user = current_user
@@ -59,7 +96,7 @@ def post_project(request):
             return redirect('index')
 
         else:
-            form = projectForm()
+            form = ProjectForm()
         return render(request,'projects.html',{"form":form})  
 
 
@@ -103,26 +140,66 @@ def view_project(request, id):
     return render(request, 'view-project.html', params)   
 
 
-class ProfileList(APIView):
-    """
-    List all snippets, or create a new snippet.
-    """
+# class ProfileList(APIView):
+#     """
+#     List all snippets, or create a new snippet.
+#     """
 
-    def get(self, request, format=None):
-        profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
+#     def get(self, request, format=None):
+#         profiles = Moringa.objects.all()
+#         serializer = ProjectSerializer(profiles, many=True)
+#         return Response(serializer.data)
 
 
 class ProjectList(APIView):
     """
     List all snippets, or create a new snippet.
     """
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get(self, request, format=None):
-        projects = Project.objects.all()
+        projects = Moringa.objects.all()
         serializer = ProjectSerializer(projects, many=True)
-        return Response(serializer.data)                       
+        return Response(serializer.data)  
+
+       
+
+    def post(self, request, format=None):
+        serializers = ProjectSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)  
+
+
+#it gets a single item i.e project
+class ProjectDescription(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    def get_project(self, pk):
+        try:
+            return Moringa.objects.get(pk=pk)
+        except Moringa.DoesNotExist:
+            return Http404
+
+    def get(self, request, pk, format=None):
+        project = self.get_project(pk)
+        serializers = ProjectSerializer(project)
+        return Response(serializers.data)  
+
+    def put(self, request, pk, format=None):
+        project = self.get_project(pk)
+        serializers = ProjectSerializer(project, request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        else:
+            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, pk, format=None):
+        project = self.get_project(pk)
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)                                        
 
 
 
