@@ -33,15 +33,16 @@ h1{
 
 #home{
     padding-top:20px;
-    background-color: rgb(224, 231, 161);
+    /* background-image: url('static/images/bgggg.jpg'); */
+    background-color: burlywood;
     margin-top: -20px;
     padding-bottom:20px
 }
-.footer{
+/* .footer{
     background-color: rgb(224, 231, 161);
     font-size: 25px;
     padding:20px
-}
+} */
 
 .projects{
     font-size:25px
@@ -54,9 +55,9 @@ h1{
         <div class="intro col-md-12 text-center ">
             <h1 id="welcome_text">Welcome to Developers' Awwards</h1>
             <hr>
-            <h3 id="description" style="margin-bottom: 5%;">Developers' Awwards is a place where you share you projects,
-                get reviews and ratings from other users.</h3>
-            <a href="{% url 'post_project' %}"> <input type="button" style="font-size: 25px;background-color:blue" class="btn btn-info " value="Post Project"></a>
+            <h3 id="description" style="margin-bottom: 5%;">View different projects and rate according to their usability and design,
+                </h3>
+            <a href="{% url 'post_project' %}"> <input type="button" style="font-size: 25px;background-color:gray; border-radius: 25px;" class="btn btn-info " value="Post Project"></a>
         </div>
     </div>
 </div>
@@ -97,8 +98,6 @@ h1{
     </div>
 </div>
 
-<footer class="footer">
-    <p class="text-center">© Kipyegon Kirui Vitalis. All Rights Reserved</p>
-</footer>
+
 {% endblock %}
 </html>
