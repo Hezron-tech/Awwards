@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse, HttpResponseRedirect
-from .models import Profile, Project, Rates
 from django.contrib.auth.models import User
 from .forms import ProjectForm,RatingsForm,SignUpForm, UpdateProfileForm, UpdateUserForm
 from django.contrib.auth.forms import AuthenticationForm
