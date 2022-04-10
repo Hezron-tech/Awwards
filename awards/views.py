@@ -10,8 +10,8 @@ from django.urls import reverse
 
 # API
 
-from .models import Profile, Project, Rates,Moringa
-from .serializers import  ProjectSerializer
+from .models import Profile, Project, Rates
+from .serializers import  ProjectSerializer,ProfileSerializer,UserSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -94,9 +94,9 @@ def post_project(request):
             post_project.save()
             return redirect('index')
 
-        else:
-            form = ProjectForm()
-        return render(request,'projects.html',{"form":form})  
+    else:
+        form = ProjectForm()
+    return render(request,'projects.html',{"form":form})  
 
 
 @login_required(login_url='/accounts/login')
@@ -139,25 +139,32 @@ def view_project(request, id):
     return render(request, 'view-project.html', params)   
 
 
-# class ProfileList(APIView):
-#     """
-#     List all snippets, or create a new snippet.
-#     """
+class ProfileList(APIView):
+    """
+    List all snippets, or create a new snippet.
+    """
 
-#     def get(self, request, format=None):
-#         profiles = Moringa.objects.all()
-#         serializer = ProjectSerializer(profiles, many=True)
-#         return Response(serializer.data)
+    def get(self, request, format=None):
+        profiles = Profile.objects.all()
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializers = ProfileSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)     
 
 
 class ProjectList(APIView):
     """
     List all snippets, or create a new snippet.
     """
-    permission_classes = (IsAdminOrReadOnly,)
+
 
     def get(self, request, format=None):
-        projects = Moringa.objects.all()
+        projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)  
 
@@ -171,13 +178,35 @@ class ProjectList(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)  
 
 
+class UserList(APIView):
+    """
+    List all snippets, or create a new snippet.
+    """
+    
+
+    def get(self, request, format=None):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)  
+
+       
+
+    def post(self, request, format=None):
+        serializers = UserSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)  
+
+
+
 #it gets a single item i.e project
 class ProjectDescription(APIView):
-    permission_classes = (IsAdminOrReadOnly,)
+    
     def get_project(self, pk):
         try:
-            return Moringa.objects.get(pk=pk)
-        except Moringa.DoesNotExist:
+            return Project.objects.get(pk=pk)
+        except Project.DoesNotExist:
             return Http404
 
     def get(self, request, pk, format=None):

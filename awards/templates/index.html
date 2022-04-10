@@ -35,7 +35,7 @@ h1{
     padding-top:20px;
     /* background-image: url('static/images/bgggg.jpg'); */
     background-color: burlywood;
-    margin-top: -20px;
+    /* margin-top: -20px; */
     padding-bottom:20px
 }
 /* .footer{
@@ -49,6 +49,7 @@ h1{
 }
 
 </style>
+
 
 <div id="home">
     <div id="overlay" class="row">
@@ -67,6 +68,7 @@ h1{
     <hr>
 
     <div class="container " style="margin-bottom: 10%;">
+        <div class="row">
         {% for project in projects%}
         <div class="col-lg-4 projects">
             <div
@@ -95,6 +97,7 @@ h1{
             </div>
         </div>
         {%endfor%}
+    </div>
     </div>
 </div>
 
