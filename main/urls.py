@@ -17,14 +17,17 @@ from django.urls import path,include
 from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.auth import views
+from awards import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('awards.urls')),
-    path('accounts/', include('registration.backends.simple.urls')),
-    # path('accounts/', include('registration.backends.awards.urls')),
-    path('api-token-auth/', obtain_auth_token),
-    path('logout/', views.logout_then_login),
+    path('accounts/', include('django_registration.backends.one_step.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('logout/', views.logout_user, name='logout'),
+
+    
+    # path('api-token-auth/', obtain_auth_token),
     
     
 ]

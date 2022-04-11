@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .forms import ProjectForm,RatingsForm,SignUpForm, UpdateProfileForm, UpdateUserForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
@@ -16,7 +16,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .permissions import IsAdminOrReadOnly
+# from .permissions import IsAdminOrReadOnly
 
 # Create your views here.
 
@@ -30,7 +30,7 @@ def index(request):
 def profile(request):
     current_user = request.user
     projects = Project.objects.filter(user=current_user.id).all
-    return render(request, 'registration/profile.html', {"projects": projects})
+    return render(request, 'profile.html', {"projects": projects})
 
 
 @login_required(login_url='/accounts/login/')
@@ -44,23 +44,23 @@ def search(request):
         message = "You haven't searched for anything, please try again"
     return render(request, 'search.html', {'message': message})  
 
-def signup(request):
-    print('here')
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.refresh_from_db() 
-            user.profile.birth_date = form.cleaned_data.get('full_name')
-            user.save()
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=user.username, password=raw_password)
+# def signup(request):
+#     print('here')
+#     if request.method == 'POST':
+#         form = SignUpForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             user.refresh_from_db() 
+#             user.profile.birth_date = form.cleaned_data.get('full_name')
+#             user.save()
+#             raw_password = form.cleaned_data.get('password1')
+#             user = authenticate(username=user.username, password=raw_password)
 
-            login(request, user)
-            return redirect('login')
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/registration_form.html', {'form': form})      
+#             login(request, user)
+#             return redirect('login')
+#     else:
+#         form = SignUpForm()
+#     return render(request, 'registration/registration_form.html', {'form': form})      
 
 
 @login_required(login_url='/accounts/login/')
@@ -74,7 +74,7 @@ def update_profile(request, id):
         user_form.save()
         return HttpResponseRedirect("/profile")
 
-    return render(request, "registration/update_profile.html", {"form": profile_form, "form2": user_form})    
+    return render(request, "update_profile.html", {"form": profile_form, "form2": user_form})    
 
 
 @login_required(login_url='/accounts/login')
@@ -97,6 +97,10 @@ def post_project(request):
     else:
         form = ProjectForm()
     return render(request,'projects.html',{"form":form})  
+@login_required(login_url='login')
+def logout_user(request):
+    logout(request)
+    return redirect('index')    
 
 
 @login_required(login_url='/accounts/login')
@@ -196,7 +200,9 @@ class UserList(APIView):
         if serializers.is_valid():
             serializers.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)  
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 

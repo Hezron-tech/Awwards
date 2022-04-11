@@ -9,7 +9,7 @@ from django_registration.backends.one_step.views import RegistrationView
 urlpatterns=[
     path('',views.index,name = 'index'),
     path('search/', views.search, name='search'),
-    path('signup/', views.signup, name='signup'),
+    
     path('profile/',views.profile, name='profile'),
     path('update/<id>', views.update_profile, name='update_profile'),
     path('post/',views.post_project,name='post_project'),
@@ -20,13 +20,21 @@ urlpatterns=[
     re_path(r'^api/users/$', views.UserList.as_view()),
     re_path(r'api/awward/project-id/(?P<pk>[0-9]+)/$',
         views.ProjectDescription.as_view()),
-    path('accounts/', include('registration.backends.simple.urls')),
-    # path('api/awward/project-id/(?P<pk>[0-9]+)/$',views.ProjectDescription.as_view()),
 
-    re_path('accounts/', include('django_registration.backends.one_step.urls')),
-    re_path('accounts/register/',
-        RegistrationView.as_view(success_url='/profile/'),
-        name='django_registration_register'),
+    path('logout/', views.logout_user, name='logout'),    
+    
+    path('accounts/', include('django_registration.backends.one_step.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    
+
+    # path('accounts/register/', RegistrationView.as_view(success_url='/profile'),name='django_registration_register'),
+    
+    
+
+    
+    # re_path('accounts/register/',
+    #     RegistrationView.as_view(success_url='/profile/'),
+    #     name='django_registration_register'),
 
     
 ]

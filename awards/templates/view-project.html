@@ -48,13 +48,14 @@
         </div>
         <div class="col-md-1"></div>
     </div>
-</div>
+<!-- </div>
 <div class="container">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
+    <div class="row">
+   
+    <div class="col-md-2">
         <h3 class="text-center">Scores</h3>
-        <div class="col-md-12">
-            <div class="col-md-3" id="c">
+        
+            <div class="col-md-2" id="c">
                 <span class="sc">Average</span>
             </div>
             <div class="col-md-2" id="c">
@@ -66,16 +67,16 @@
             <div class="col-md-2" id="c">
                 <span class="sc">Content</span>
             </div>
-            <div class="col-md-3" id="c">
+            <div class="col-md-2" id="c">
                 <span class="sc">Rated by:</span>
             </div>
-        </div>
+       
 
         {% for reviews in reviews %}
         <div class="col-md-12">
             {% if project.id == reviews.project.id %}
 
-            <div class="col-md-3" id="c">
+            <div class="col-md-2" id="c">
                 <span class="sc">{{ reviews.average }}</span>
             </div>
             <div class="col-md-2">
@@ -87,16 +88,39 @@
             <div class="col-md-2" id="c">
                 <span class="sc">{{ reviews.content }}</span>
             </div>
-            <div class="col-md-3" id="c">
+            <div class="col-md-2" id="c">
                 <span class="sc">{{ reviews.user.username }}</span>
             </div>
 
             <!-- {% widthratio reviews.average ratings|length 1%} -->
 
-            {% endif %}
+            <!-- {% endif %}
         </div>
         {% endfor %}
 
-        <div class="col-md-2"></div>
+       
     </div>
+   </div> 
+    </div> -->
+
+    <h2>Ratings</h2>
+            <table class="table" border="1">
+                <th>Username</th>
+                <th>Design Rating</th>
+                <th>Usability Rating</th>
+                <th>Content Rating</th>
+                <th>Overal Score</th>
+                {% for reviews in reviews %}
+                <tr>
+                    <td class="user">{{ reviews.user.username }}</td>
+                    <td class="design">{{ reviews.design }}</td>
+                    <td class="usability">{{ reviews.usability }}</td>
+                    <td class="content">{{ reviews.content }}</td>
+                    <td class="average">{{reviews.average  }}</td>
+
+                </tr>
+
+
+                {% endfor %}
+            </table>
     {% endblock %}
