@@ -141,3 +141,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL='index'
+REGISTER_REDIRECT_URL='index'
